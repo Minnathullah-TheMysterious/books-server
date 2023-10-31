@@ -14,15 +14,15 @@ dotenv_1.default.config();
 const port = process.env.PORT;
 //Connect to database
 (0, mongo_1.default)();
+const rootDir = path_1.default.join(__dirname, "..");
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-app.use(express_1.default.static("build"));
+app.use(express_1.default.static(path_1.default.join(rootDir, "build")));
 //Routes
 app.use("/api/v1/book", bookRoute_1.default);
-const rootDir = path_1.default.join(__dirname, '..');
 // serve static files
 app.use("*", function (req, res) {
-    res.sendFile(path_1.default.join(rootDir, "build/index.html"));
+    res.sendFile(path_1.default.join(rootDir, "build", "index.html"));
 });
 app.listen(port, () => {
     console.log("App listening on port " + port);
