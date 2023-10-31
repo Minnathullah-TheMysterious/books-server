@@ -1,6 +1,8 @@
-# BooksMMR API Documentation
+# BooksMMR
 
 Welcome to the BooksMMR API documentation. This API is open source and allows anyone to create, read, update, and delete books in the catalog. It provides endpoints for managing books in a simple catalog. Below, you will find information on how to use the various endpoints.
+
+## API Documentation
 
 ## Base URL
 
@@ -276,11 +278,7 @@ success: false,
 message: "No book found with the provided ID",
 }
 
-## Conclusion
-
-This BooksMMR catalog API allows anyone to create, read, update, and delete books in the catalog.
-
-# Setting Up and Running the Application Locally
+## Setting Up and Running the Application Locally
 
 To run this application on your local machine, follow these steps:
 
@@ -315,3 +313,47 @@ http://localhost:8080
 ### 7. Explore the Application:
 
 You are now ready to explore and interact with the application locally.
+
+## Deployment
+
+This section outlines the steps for deploying the Node.js application on Vercel.
+
+### Prerequisites
+
+Before deploying the application, make sure you have the following:
+
+- A Vercel account. If you don't have one, sign up at [Vercel](https://vercel.com/).
+
+### Deployment on Vercel
+
+Follow these steps to deploy your Node.js application on Vercel:
+
+1. **Connect Your GitHub Repository:**
+
+   - Log in to your Vercel account.
+
+   - Click the "Import Project" button in your Vercel dashboard.
+
+   - Select the GitHub repository for your Node.js application.
+
+   - Configure the deployment settings in your `vercel.json` file.
+
+2. **Environment Variables:**
+
+   - In the Vercel project settings, navigate to the "Environment Variables" section.
+
+   - Add environment variables that correspond to your production environment settings.
+
+3. **Deployment:**
+
+   - After setting up the environment variables, click the "Deploy" button.
+
+   - Vercel will automatically build and deploy your Node.js application along with the React build.
+
+4. **Access Your Deployed Application:**
+
+   - Once the deployment is complete, Vercel will provide you with a unique URL for your application. You can access your live application by visiting this URL.
+
+## Conclusion
+
+This BooksMMR catalog API allows anyone to create, read, update, and delete books in the catalog.
