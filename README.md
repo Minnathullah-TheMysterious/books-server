@@ -276,6 +276,42 @@ success: false,
 message: "No book found with the provided ID",
 }
 
-# Conclusion
+## Conclusion
 
 This BooksMMR catalog API allows anyone to create, read, update, and delete books in the catalog.
+
+# Setting Up and Running the Application Locally
+
+To run this application on your local machine, follow these steps:
+
+### 1. Clone the Repository:
+
+git clone https://github.com/minnathullah-TheMysterious/books-server.git
+
+### 2. Navigate to the Project Directory:
+
+cd books-server
+
+### 3. Install Dependencies:
+
+Run the following command to install the required dependencies:
+npm install
+
+### 4. Database Setup:
+
+Create a new file .env in the root directory of the project.
+Open the .env file and set the value for DB_URL variable which is the database path
+
+### 5. Start the Development Server:
+
+After the dependencies are installed, start the development server with the following command:
+npm run server
+
+### 6. Access the Application:
+
+Once the server is running, you can access the application in your web browser at:
+http://localhost:8080
+
+### 7. Explore the Application:
+
+You are now ready to explore and interact with the application locally.
