@@ -64,9 +64,7 @@ const fetchAllBooksController = (req, res) => __awaiter(void 0, void 0, void 0, 
     try {
         const books = yield bookModel_1.default.find();
         if (!books || !(books === null || books === void 0 ? void 0 : books.length)) {
-            return res
-                .status(200)
-                .json({ success: false, message: "No Books Found" });
+            return res.status(200).json({ success: true, message: "No Books Found" });
         }
         return res
             .status(200)
@@ -157,12 +155,14 @@ const updateBookByIdController = (req, res) => __awaiter(void 0, void 0, void 0,
             if (error instanceof Error &&
                 "code" in error &&
                 error.code === 11000) {
+                console.error(error);
                 return res.status(409).json({
                     success: false,
                     message: "Book with the same name already exists",
                     error: error.message,
                 });
             }
+            console.error(error);
             return res.status(500).json({
                 success: false,
                 message: "Something went wrong while updating the book",
@@ -184,9 +184,7 @@ const deleteBookByIdController = (req, res) => __awaiter(void 0, void 0, void 0,
         }
         const book = yield bookModel_1.default.findByIdAndDelete(bookId);
         if (!book) {
-            return res
-                .status(400)
-                .json({
+            return res.status(400).json({
                 success: false,
                 message: "No book found with the provided ID",
             });

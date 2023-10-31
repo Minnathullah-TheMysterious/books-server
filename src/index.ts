@@ -1,25 +1,32 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import dbConnect from './db/mongo'
-import bookRoute from './routes/bookRoute'
-import cors from 'cors'
+import express, { Request, Response } from "express";
+import dotenv from "dotenv";
+import dbConnect from "./db/mongo";
+import bookRoute from "./routes/bookRoute";
+import cors from "cors";
+import path from "path";
 
-const app:express.Application = express()
-dotenv.config()
+const app: express.Application = express();
+dotenv.config();
 
-const port = process.env.PORT
+const port = process.env.PORT;
 
 //Connect to database
-dbConnect()
+dbConnect();
 
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
+app.use(express.static("build"));
 
 //Routes
-app.use('/api/v1/book', bookRoute)
+app.use("/api/v1/book", bookRoute);
 
-app.get('*', (req:express.Request, res:express.Response)=>{
-    res.status(404).send('Not Found')
-})
+const rootDir = path.join(__dirname, '..')
 
-app.listen(port, ()=>{console.log('App listening on port ' + port)})
+// serve static files
+app.use("*", function (req: Request, res: Response) {
+  res.sendFile(path.join(rootDir, "build/index.html"));
+});
+
+app.listen(port, () => {
+  console.log("App listening on port " + port);
+});
