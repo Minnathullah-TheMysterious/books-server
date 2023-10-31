@@ -66,7 +66,7 @@ export const fetchAllBooksController = async (req: Request, res: Response) => {
     const books = await bookModel.find();
 
     if (!books || !books?.length) {
-      return res.status(200).json({ success: true, message: "No Books Found" });
+      return res.status(404).json({ success: false, message: "No Books Found" });
     }
 
     return res
@@ -207,7 +207,7 @@ export const deleteBookByIdController = async (req: Request, res: Response) => {
     const book = await bookModel.findByIdAndDelete(bookId);
 
     if (!book) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message: "No book found with the provided ID",
       });
