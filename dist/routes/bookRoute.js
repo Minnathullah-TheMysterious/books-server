@@ -13,4 +13,6 @@ router.get("/fetch/:bookId", bookController_1.fetchBookByIdController);
 router.put("/update/:bookId", bookController_1.updateBookByIdController);
 /*********Delete Book By ID********* */
 router.delete("/delete/:bookId", bookController_1.deleteBookByIdController);
+/*************Search Book By Title Or Author************ */
+router.post('/search', bookController_1.searchBookByTitleOrAuthorController);
 exports.default = router;

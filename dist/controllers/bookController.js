@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteBookByIdController = exports.updateBookByIdController = exports.fetchBookByIdController = exports.fetchAllBooksController = exports.createBookController = void 0;
+exports.searchBookByTitleOrAuthorController = exports.deleteBookByIdController = exports.updateBookByIdController = exports.fetchBookByIdController = exports.fetchAllBooksController = exports.createBookController = void 0;
 const bookModel_1 = __importDefault(require("../models/bookModel"));
 const mongoose_1 = require("mongoose");
 /***************Create Book || POST************* */
@@ -64,7 +64,9 @@ const fetchAllBooksController = (req, res) => __awaiter(void 0, void 0, void 0, 
     try {
         const books = yield bookModel_1.default.find();
         if (!books || !(books === null || books === void 0 ? void 0 : books.length)) {
-            return res.status(200).json({ success: true, message: "No Books Found" });
+            return res
+                .status(404)
+                .json({ success: false, message: "No Books Found" });
         }
         return res
             .status(200)
@@ -184,7 +186,7 @@ const deleteBookByIdController = (req, res) => __awaiter(void 0, void 0, void 0,
         }
         const book = yield bookModel_1.default.findByIdAndDelete(bookId);
         if (!book) {
-            return res.status(400).json({
+            return res.status(404).json({
                 success: false,
                 message: "No book found with the provided ID",
             });
@@ -205,3 +207,42 @@ const deleteBookByIdController = (req, res) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.deleteBookByIdController = deleteBookByIdController;
+/***************Search Book By Title or Author || POST************* */
+const searchBookByTitleOrAuthorController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { searchInput } = req.body;
+        if (!searchInput) {
+            return res
+                .status(400)
+                .json({ success: false, message: "Please provide an input to search" });
+        }
+        const books = yield bookModel_1.default.find({
+            $or: [
+                { title: { $regex: searchInput, $options: "i" } },
+                { author: { $regex: searchInput, $options: "i" } },
+            ],
+        });
+        if (!books || !books.length) {
+            return res.status(404).json({
+                success: false,
+                message: "Search Results Not Found",
+            });
+        }
+        return res
+            .status(200)
+            .json({ success: true, message: "Book Found", books });
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({
+                success: false,
+                message: "Something went wrong while searching the book",
+                error: error.message,
+            });
+        }
+        else {
+            console.error("An unknown error occurred");
+        }
+    }
+});
+exports.searchBookByTitleOrAuthorController = searchBookByTitleOrAuthorController;

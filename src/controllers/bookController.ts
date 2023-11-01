@@ -66,7 +66,9 @@ export const fetchAllBooksController = async (req: Request, res: Response) => {
     const books = await bookModel.find();
 
     if (!books || !books?.length) {
-      return res.status(404).json({ success: false, message: "No Books Found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "No Books Found" });
     }
 
     return res
@@ -219,6 +221,50 @@ export const deleteBookByIdController = async (req: Request, res: Response) => {
       return res.status(500).json({
         success: false,
         message: "Something went wrong while deleting the book",
+        error: error.message,
+      });
+    } else {
+      console.error("An unknown error occurred");
+    }
+  }
+};
+
+/***************Search Book By Title or Author || POST************* */
+export const searchBookByTitleOrAuthorController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { searchInput } = req.body;
+
+    if (!searchInput) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Please provide an input to search" });
+    }
+
+    const books = await bookModel.find({
+      $or: [
+        { title: { $regex: searchInput, $options: "i" } },
+        { author: { $regex: searchInput, $options: "i" } },
+      ],
+    });
+
+    if (!books || !books.length) {
+      return res.status(404).json({
+        success: false,
+        message: "Search Results Not Found",
+      });
+    }
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Book Found", books });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({
+        success: false,
+        message: "Something went wrong while searching the book",
         error: error.message,
       });
     } else {

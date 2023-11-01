@@ -4,6 +4,7 @@ import {
   deleteBookByIdController,
   fetchAllBooksController,
   fetchBookByIdController,
+  searchBookByTitleOrAuthorController,
   updateBookByIdController,
 } from "../controllers/bookController";
 
@@ -23,5 +24,8 @@ router.put("/update/:bookId", updateBookByIdController);
 
 /*********Delete Book By ID********* */
 router.delete("/delete/:bookId", deleteBookByIdController);
+
+/*************Search Book By Title Or Author************ */
+router.post('/search', searchBookByTitleOrAuthorController)
 
 export default router;
