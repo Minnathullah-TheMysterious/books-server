@@ -12,13 +12,19 @@ The base URL for this API is: https://localhost:8080
 
 ### Get A List Of Books
 
-### `GET /api/v1/book/fetch-all`
+### `GET /api/v1/book/fetch-all?page=1&limit=10`
 
 This endpoint allows you to retrieve a list of all books in the catalog.
 
 ### Request:
 
 No request parameters are required for this endpoint.
+
+#### Query Parameters:
+
+For pagination provide 'page' & 'limit' as query parameter
+
+In case query parameters are not provided, first 10 books will appear in response. As page has been set to 1 and limit has been set to 10 by default.
 
 ### Response:
 
@@ -29,6 +35,7 @@ No request parameters are required for this endpoint.
 {
 "success": true,
 "message": "Fetched all the books",
+"totalDocsCount": 7,
 "books": [
 {
 "_id": "653f904597365ac11d60d972",
@@ -65,7 +72,7 @@ No request parameters are required for this endpoint.
 
 ### Get A Book By ID
 
-### `GET /api/v1/book/fetch/{ID}`
+### `GET /api/v1/book/fetch/{id}`
 
 This endpoint allows you to retrieve information about a specific book by providing its unique ID.
 
@@ -173,7 +180,7 @@ This endpoint allows you to create a new book in the catalog.
 
 ## Update A Book By ID
 
-### `PUT /api/v1/update/{id}`
+### `PUT /api/v1/book/update/{id}`
 
 This endpoint allows you to update an existing book in the catalog by providing its unique ID.
 
@@ -243,7 +250,7 @@ id (string, required): The unique identifier for the book.
 
 ## Delete a Book by ID
 
-### `DELETE /api/v1/book/{id}`
+### `DELETE /api/v1/book/delete/{id}`
 
 This endpoint allows you to delete a book from the catalog by providing its unique ID.
 
@@ -277,6 +284,55 @@ id (string, required): The unique identifier for the book.
 success: false,
 message: "No book found with the provided ID",
 }
+
+## Search Books By Author Name Or Book Title
+
+### `POST /api/v1/book/search?page=1&limit=10`
+
+This endpoint allows you to search books from the catalog by providing author name or book title.
+
+#### Query Parameters:
+
+For pagination provide 'page' & 'limit' as query parameter
+
+In case query parameters are not provided, first 10 books will appear in response. As page has been set to 1 and limit has been set to 10 by default.
+
+### Request:
+
+#### Request Body:
+
+{"searchInput": "BookName/AuthorName"}
+
+### Response:
+
+#### HTTP Status Code: 200 OK
+
+{
+"success": true,
+"message": "Book Found",
+"books": [
+{
+"_id": "653f905e97365ac11d60d97e",
+"title": "Book-G",
+"author": "Rahmani",
+"summary": "Learn & Grow",
+"createdAt": "2023-10-30T11:15:42.524Z",
+"updatedAt": "2023-10-30T11:15:42.524Z",
+"__v": 0
+},
+more books if found..
+]
+}
+
+### Error Responses:
+
+#### HTTP Status Code: 400 Not Found
+
+{ success: false, message: "Please provide an input to search" }
+
+#### HTTP Status Code: 404 Not Found
+
+{ success: false, message: "Search Results Not Found"}
 
 ## Setting Up and Running the Application Locally
 

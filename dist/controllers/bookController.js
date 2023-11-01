@@ -62,15 +62,26 @@ exports.createBookController = createBookController;
 /***************Fetch All Books || GET************* */
 const fetchAllBooksController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const books = yield bookModel_1.default.find();
+        const { page, limit } = req.query;
+        const defaultLimit = 10;
+        const defaultPage = 1;
+        const books = yield bookModel_1.default
+            .find()
+            .limit(limit ? +limit : defaultLimit)
+            .skip((page && +page > 0 ? +page - 1 : defaultPage - 1) *
+            (limit ? +limit : defaultLimit));
+        const booksLength = yield bookModel_1.default.find();
         if (!books || !(books === null || books === void 0 ? void 0 : books.length)) {
             return res
                 .status(404)
                 .json({ success: false, message: "No Books Found" });
         }
-        return res
-            .status(200)
-            .json({ success: true, message: "Fetched all the books", books });
+        return res.status(200).json({
+            success: true,
+            message: "Fetched all the books",
+            totalDocsCount: booksLength.length,
+            books,
+        });
     }
     catch (error) {
         if (error instanceof Error) {
@@ -211,12 +222,25 @@ exports.deleteBookByIdController = deleteBookByIdController;
 const searchBookByTitleOrAuthorController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { searchInput } = req.body;
+        const { page, limit } = req.query;
+        const defaultLimit = 10;
+        const defaultPage = 1;
         if (!searchInput) {
             return res
                 .status(400)
                 .json({ success: false, message: "Please provide an input to search" });
         }
-        const books = yield bookModel_1.default.find({
+        const books = yield bookModel_1.default
+            .find({
+            $or: [
+                { title: { $regex: searchInput, $options: "i" } },
+                { author: { $regex: searchInput, $options: "i" } },
+            ],
+        })
+            .limit(limit ? +limit : defaultLimit)
+            .skip((page && +page > 0 ? +page - 1 : defaultPage - 1) *
+            (limit ? +limit : defaultLimit));
+        const booksLength = yield bookModel_1.default.find({
             $or: [
                 { title: { $regex: searchInput, $options: "i" } },
                 { author: { $regex: searchInput, $options: "i" } },
@@ -228,9 +252,12 @@ const searchBookByTitleOrAuthorController = (req, res) => __awaiter(void 0, void
                 message: "Search Results Not Found",
             });
         }
-        return res
-            .status(200)
-            .json({ success: true, message: "Book Found", books });
+        return res.status(200).json({
+            success: true,
+            message: "Book(s) Found",
+            totalDocsCount: booksLength.length,
+            books,
+        });
     }
     catch (error) {
         if (error instanceof Error) {

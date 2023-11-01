@@ -63,7 +63,20 @@ export const createBookController = async (req: Request, res: Response) => {
 /***************Fetch All Books || GET************* */
 export const fetchAllBooksController = async (req: Request, res: Response) => {
   try {
-    const books = await bookModel.find();
+    const { page, limit } = req.query;
+
+    const defaultLimit: number = 10;
+    const defaultPage: number = 1;
+
+    const books = await bookModel
+      .find()
+      .limit(limit ? +limit : defaultLimit)
+      .skip(
+        (page && +page > 0 ? +page - 1 : defaultPage - 1) *
+          (limit ? +limit : defaultLimit)
+      );
+
+    const booksLength = await bookModel.find();
 
     if (!books || !books?.length) {
       return res
@@ -71,9 +84,12 @@ export const fetchAllBooksController = async (req: Request, res: Response) => {
         .json({ success: false, message: "No Books Found" });
     }
 
-    return res
-      .status(200)
-      .json({ success: true, message: "Fetched all the books", books });
+    return res.status(200).json({
+      success: true,
+      message: "Fetched all the books",
+      totalDocsCount: booksLength.length,
+      books,
+    });
   } catch (error) {
     if (error instanceof Error) {
       console.error(
@@ -236,6 +252,10 @@ export const searchBookByTitleOrAuthorController = async (
 ) => {
   try {
     const { searchInput } = req.body;
+    const { page, limit } = req.query;
+
+    const defaultLimit: number = 10;
+    const defaultPage: number = 1;
 
     if (!searchInput) {
       return res
@@ -243,7 +263,20 @@ export const searchBookByTitleOrAuthorController = async (
         .json({ success: false, message: "Please provide an input to search" });
     }
 
-    const books = await bookModel.find({
+    const books = await bookModel
+      .find({
+        $or: [
+          { title: { $regex: searchInput, $options: "i" } },
+          { author: { $regex: searchInput, $options: "i" } },
+        ],
+      })
+      .limit(limit ? +limit : defaultLimit)
+      .skip(
+        (page && +page > 0 ? +page - 1 : defaultPage - 1) *
+          (limit ? +limit : defaultLimit)
+      );
+
+    const booksLength = await bookModel.find({
       $or: [
         { title: { $regex: searchInput, $options: "i" } },
         { author: { $regex: searchInput, $options: "i" } },
@@ -257,9 +290,12 @@ export const searchBookByTitleOrAuthorController = async (
       });
     }
 
-    return res
-      .status(200)
-      .json({ success: true, message: "Book Found", books });
+    return res.status(200).json({
+      success: true,
+      message: "Book(s) Found",
+      totalDocsCount: booksLength.length,
+      books,
+    });
   } catch (error) {
     if (error instanceof Error) {
       return res.status(500).json({
